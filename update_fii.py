@@ -196,6 +196,16 @@ for r in range(2, len(df)):
     row = df.iloc[r].tolist()
     name = str(row[0]).strip().upper()
 
+        # ================= NOTES SECTION =================
+    if "NOTE" in name:
+        table_html += "<tr class='separator'><td colspan='9'></td></tr>"
+        table_html += f"<tr class='notes'><td colspan='9' class='left bold'>{row[0]}</td></tr>"
+        continue
+
+    if r > 2 and "NOTE" in str(df.iloc[r-1,0]).upper():
+        table_html += f"<tr class='notes'><td colspan='9' class='left'>{row[0]}</td></tr>"
+        continue
+        
     if name == "":
         continue
 
@@ -290,14 +300,17 @@ th {{ text-align:center; }}
 }}
 
 .separator td {{
- height:2px;
+ height:0.5px;
  background:#cfd6ff;
  border:none;
 }}
 
-.notes td {{
- font-size:10px;
- padding:3px;
+.notes td{
+ font-size:9px;
+ padding:2px 6px;
+ line-height:1.1;
+ background:#eef2ff;
+}
 }}
 
 .rotate {{
