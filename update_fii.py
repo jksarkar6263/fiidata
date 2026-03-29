@@ -135,25 +135,86 @@ def number_color(val):
     return "black"
 
 # -------------------------------
-# STEP 6 — BUILD HTML TABLE MANUALLY
+# STEP 6 — BUILD TRUE EXCEL-LAYOUT TABLE
 # -------------------------------
-table_html = "<table>"
+def color_net(val):
+    try:
+        v = float(str(val).replace(",", ""))
+        if v > 0:
+            return "green"
+        elif v < 0:
+            return "red"
+    except:
+        return "black"
+    return "black"
 
-for r in range(len(df)):
-    table_html += "<tr>"
-    for c, val in enumerate(df.iloc[r]):
-        style = "text-align:center; padding:6px; border:1px solid #ccc;"
+table_html = """
+<table class='fii'>
+"""
 
-        # First column bold left
-        if c == 0:
-            style += "font-weight:bold; text-align:left;"
+# ================= HEADER ROW 1 =================
+table_html += """
+<tr class='tophead'>
+  <th rowspan='3' class='credit'>
+    <div class='rotate'>jayfromstockmarketsinindia</div>
+  </th>
+  <th colspan='2'>BUY</th>
+  <th colspan='2'>SELL</th>
+  <th colspan='2'>NET</th>
+  <th colspan='2'>OPEN INTEREST</th>
+</tr>
+"""
 
-        # NET columns (F & G → index 5 & 6)
-        if c in [5,6]:
-            style += "font-weight:bold; font-size:13px;"
-            style += f"color:{number_color(val)};"
+# ================= HEADER ROW 2 =================
+table_html += """
+<tr class='midhead'>
+  <th colspan='2'>FII</th>
+  <th colspan='2'>FII</th>
+  <th colspan='2'>FII</th>
+  <th colspan='2'>FII</th>
+</tr>
+"""
+
+# ================= HEADER ROW 3 =================
+table_html += """
+<tr class='subhead'>
+  <th>No. of Contracts</th><th>Amount (in ₹ Crores)</th>
+  <th>No. of Contracts</th><th>Amount (in ₹ Crores)</th>
+  <th>No. of Contracts</th><th>Amount (in ₹ Crores)</th>
+  <th>No. of Contracts</th><th>Amount (in ₹ Crores)</th>
+</tr>
+"""
+
+# ================= DATA ROWS =================
+major_rows = ["INDEX FUTURES","INDEX OPTIONS","STOCK FUTURES","STOCK OPTIONS"]
+
+for r in range(2, len(df)):  # skip header rows from XLS
+    row = df.iloc[r].tolist()
+    name = str(row[0]).upper()
+
+    if name.strip() == "":
+        continue
+
+    # highlight category rows
+    if any(k in name for k in major_rows):
+        table_html += "<tr class='category'>"
+    else:
+        table_html += "<tr>"
+
+    # first column (segment name)
+    table_html += f"<td class='left bold'>{row[0]}</td>"
+
+    # remaining numeric columns
+    for i in range(1,9):
+        val = row[i]
+        style = ""
+
+        # NET columns colored
+        if i in [5,6]:
+            style += f"color:{color_net(val)};font-weight:bold;font-size:12px;"
 
         table_html += f"<td style='{style}'>{val}</td>"
+
     table_html += "</tr>"
 
 table_html += "</table>"
@@ -167,9 +228,54 @@ html = f"""
 <head>
 <meta charset="UTF-8">
 <style>
-body {{font-family:Arial}}
-.container {{max-width:770px;margin:auto}}
-table {{border-collapse:collapse;width:100%;font-size:12px}}
+.container{
+ max-width:770px;
+ margin:auto;
+}
+
+table.fii{
+ width:100%;
+ border-collapse:collapse;
+ font-size:11px;
+}
+
+td,th{
+ border:1px solid #cfd6e6;
+ padding:6px 6px;
+ text-align:center;
+}
+
+.tophead th{
+ background:#002a6e;
+ color:white;
+ font-size:14px;
+}
+
+.midhead th{
+ background:#244c9a;
+ color:white;
+ font-size:12px;
+}
+
+.subhead th{
+ background:#4f74c9;
+ color:white;
+ font-size:11px;
+}
+
+.left{ text-align:left; }
+.bold{ font-weight:bold; }
+
+.category{
+ background:#e8eefc;
+ font-weight:bold;
+}
+
+.rotate{
+ transform:rotate(-45deg);
+ white-space:nowrap;
+ font-weight:bold;
+}
 </style>
 </head>
 
