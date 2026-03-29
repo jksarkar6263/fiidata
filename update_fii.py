@@ -3,7 +3,7 @@ import requests
 from datetime import datetime, timedelta
 
 # -------------------------------
-# STEP 1 — DOWNLOAD LATEST NSE FILE
+# STEP 1 — FIND LATEST NSE FILE
 # -------------------------------
 session = requests.Session()
 
@@ -40,77 +40,55 @@ with open("temp.xls", "wb") as f:
     f.write(file_content)
 
 # -------------------------------
-# STEP 2 — READ SHEET2 EXACTLY
+# STEP 2 — READ NSE XLS
 # -------------------------------
 df = pd.read_excel("temp.xls", header=None)
 df = df.fillna("")
 
 # -------------------------------
-# STEP 3 — HELPERS
+# STEP 3 — ADD NET COLUMNS (Sheet2 formulas)
 # -------------------------------
-def number_color(val):
+BUY_CONTRACT_COL = 2
+BUY_AMOUNT_COL   = 3
+SELL_CONTRACT_COL = 4
+SELL_AMOUNT_COL   = 5
+
+net_contracts = []
+net_amounts = []
+
+for i in range(len(df)):
     try:
-        v = float(str(val).replace(",", ""))
-        if v > 0:
-            return "green"
-        elif v < 0:
-            return "red"
+        buy_c = float(df.iloc[i, BUY_CONTRACT_COL])
+        sell_c = float(df.iloc[i, SELL_CONTRACT_COL])
+        buy_a = float(df.iloc[i, BUY_AMOUNT_COL])
+        sell_a = float(df.iloc[i, SELL_AMOUNT_COL])
+
+        net_contracts.append(buy_c - sell_c)
+        net_amounts.append(buy_a - sell_a)
     except:
-        pass
-    return "black"
+        net_contracts.append("")
+        net_amounts.append("")
 
-def is_category_row(text):
-    text = text.upper()
-    keywords = ["INDEX FUTURES", "INDEX OPTIONS", "STOCK FUTURES", "STOCK OPTIONS"]
-    return any(k in text for k in keywords)
+df["NET Contracts"] = net_contracts
+df["NET Amount"] = net_amounts
 
 # -------------------------------
-# STEP 4 — BUILD TABLE MANUALLY
+# STEP 4 — CONVERT TO HTML TABLE
 # -------------------------------
-table_html = "<table>"
+table_html = df.to_html(index=False, header=False, border=0)
 
-for r in range(len(df)):
-    row_values = df.iloc[r].tolist()
-    row_text = " ".join([str(x) for x in row_values])
-
-    # highlight major rows
-    if is_category_row(row_text):
-        table_html += "<tr class='category'>"
-    else:
-        table_html += "<tr>"
-
-    for c, val in enumerate(row_values):
-        style = ""
-
-        # first column bold
-        if c == 0:
-            style += "font-weight:bold; text-align:left;"
-
-        # NET columns (last two columns)
-        if c >= len(row_values) - 2:
-            style += "font-weight:bold; font-size:13px;"
-            style += f"color:{number_color(val)};"
-
-        text = str(val)
-
-        # rotate credit text
-        if "jayfromstockmarketsinindia" in text.lower():
-            text = f"<div class='rotate'>{text}</div>"
-
-        table_html += f"<td style='{style}'>{text}</td>"
-
-    table_html += "</tr>"
-
-table_html += "</table>"
+# Fix header wording globally
+table_html = table_html.replace("Amt in Crores", "Amount (₹ Crores)")
 
 # -------------------------------
-# STEP 5 — FINAL WEBPAGE
+# STEP 5 — BUILD WEBPAGE
 # -------------------------------
 html = f"""
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
+<title>FII Derivative Data</title>
 
 <style>
 body {{
@@ -124,37 +102,26 @@ body {{
 }}
 
 table {{
+    border-collapse: collapse;
+    font-size: 12px;
     width:100%;
-    border-collapse:collapse;
-    font-size:11px;
 }}
 
 td {{
-    border:1px solid #d0d7e5;
-    padding:6px 8px;
+    padding: 6px 10px;
+    border:1px solid #ccc;
     text-align:center;
 }}
-
-.category {{
-    background:#e8eefc;
-}}
-
-.rotate {{
-    transform:rotate(-45deg);
-    white-space:nowrap;
-}}
-
 </style>
+
 </head>
-
 <body>
+
 <div class="container">
-
 <p><b>Last updated: {file_date}</b></p>
-
 {table_html}
-
 </div>
+
 </body>
 </html>
 """
