@@ -75,7 +75,53 @@ df.insert(5, "NET Contracts", net_contracts)
 df.insert(6, "NET Amount", net_amounts)
 
 # -------------------------------
-# STEP 4 — COLOR FUNCTION
+# STEP 4 — NUMBER FORMATTING ENGINE
+# -------------------------------
+
+def format_contract(val):
+    """Format contract numbers → integer with commas"""
+    try:
+        num = float(val)
+        return f"{int(num):,}"
+    except:
+        return val
+
+def format_amount(val):
+    """Format amount → 2 decimals with commas"""
+    try:
+        num = float(val)
+        return f"{num:,.2f}"
+    except:
+        return val
+
+# Apply formatting to dataframe cells
+for r in range(len(df)):
+    for c in range(len(df.columns)):
+
+        value = df.iat[r, c]
+
+        # Skip header rows (first 2 rows in Sheet2)
+        if r < 2:
+            continue
+
+        # Column positions (Excel structure)
+        # 1 = Buy Contracts
+        # 2 = Buy Amount
+        # 3 = Sell Contracts
+        # 4 = Sell Amount
+        # 5 = NET Contracts
+        # 6 = NET Amount
+        # 7 = OI Contracts
+        # 8 = OI Amount
+
+        if c in [1,3,5,7]:      # Contracts columns
+            df.iat[r, c] = format_contract(value)
+
+        if c in [2,4,6,8]:      # Amount columns
+            df.iat[r, c] = format_amount(value)
+
+# -------------------------------
+# STEP 5 — COLOR FUNCTION
 # -------------------------------
 def number_color(val):
     try:
@@ -89,7 +135,7 @@ def number_color(val):
     return "black"
 
 # -------------------------------
-# STEP 5 — BUILD HTML TABLE MANUALLY
+# STEP 6 — BUILD HTML TABLE MANUALLY
 # -------------------------------
 table_html = "<table>"
 
@@ -113,7 +159,7 @@ for r in range(len(df)):
 table_html += "</table>"
 
 # -------------------------------
-# STEP 6 — FINAL WEBPAGE
+# STEP 7 — FINAL WEBPAGE
 # -------------------------------
 html = f"""
 <!DOCTYPE html>
