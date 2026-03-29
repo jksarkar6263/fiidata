@@ -134,6 +134,17 @@ def number_color(val):
         pass
     return "black"
 
+# Color for NET values (green / red)
+def color_net(val):
+    try:
+        v = float(str(val).replace(",", ""))
+        if v > 0:
+            return "green"
+        elif v < 0:
+            return "red"
+    except:
+        pass
+    return "black"
 # -------------------------------
 # STEP 6 — BUILD FULL EXCEL STYLE TABLE
 # -------------------------------
