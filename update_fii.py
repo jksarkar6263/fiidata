@@ -135,80 +135,93 @@ def number_color(val):
     return "black"
 
 # -------------------------------
-# STEP 6 — BUILD TRUE EXCEL-LAYOUT TABLE
+# STEP 6 — BUILD FULL EXCEL STYLE TABLE
 # -------------------------------
-def color_net(val):
-    try:
-        v = float(str(val).replace(",", ""))
-        if v > 0:
-            return "green"
-        elif v < 0:
-            return "red"
-    except:
-        return "black"
-    return "black"
 
-table_html = """
-<table class='fii'>
+table_html = "<table class='fii'>"
+
+# ===== TOP TITLE BAR =====
+table_html += f"""
+<tr class='topbar'>
+<td colspan='5' class='left bold'>
+FII DERIVATIVES STATISTICS FOR {file_date}
+</td>
+<td colspan='4' class='num bold'>
+Last updated on {file_date}
+</td>
+</tr>
 """
 
-# ================= HEADER ROW 1 =================
-
-
-# ================= HEADER ROW 2 =================
+# ===== GROUP HEADERS =====
 table_html += """
-<tr class='tophead'>
-  <th rowspan='2' class='credit'>
+<tr class='subhead'>
+  <th rowspan='2' class='credit firstcol'>
     <div class='rotate'>jayfromstockmarketsinindia</div>
   </th>
   <th colspan='2'>BUY</th>
   <th colspan='2'>SELL</th>
   <th colspan='2'>NET</th>
-  <th colspan='2'>OPEN INTEREST AT THE END OF THE DAY</th>
+  <th colspan='2'>OPEN INTEREST</th>
 </tr>
 """
 
-# ================= HEADER ROW 3 =================
+# ===== SUB HEADERS =====
 table_html += """
-<tr class='subhead'>
-  <th>No. of Contracts</th><th>Amount (₹ Crores)</th>
-  <th>No. of Contracts</th><th>Amount (₹ Crores)</th>
-  <th>No. of Contracts</th><th>Amount (₹ Crores)</th>
-  <th>No. of Contracts</th><th>Amount (₹ Crores)</th>
+<tr class='subsub'>
+  <th>No. of Contracts</th>
+  <th class='wrapamt'>Amount<br>(₹ Crores)</th>
+  <th>No. of Contracts</th>
+  <th class='wrapamt'>Amount<br>(₹ Crores)</th>
+  <th>No. of Contracts</th>
+  <th class='wrapamt'>Amount<br>(₹ Crores)</th>
+  <th>No. of Contracts</th>
+  <th class='wrapamt'>Amount<br>(₹ Crores)</th>
 </tr>
 """
 
-# ================= DATA ROWS =================
 major_rows = ["INDEX FUTURES","INDEX OPTIONS","STOCK FUTURES","STOCK OPTIONS"]
 
-for r in range(2, len(df)):  # skip header rows from XLS
+for r in range(2, len(df)):
     row = df.iloc[r].tolist()
-    name = str(row[0]).upper()
+    name = str(row[0]).strip().upper()
 
-    if name.strip() == "":
+    if name == "":
         continue
 
-    # highlight category rows
-    if any(k in name for k in major_rows):
+    # separator before major blocks
+    if name in major_rows:
+        table_html += "<tr class='separator'><td colspan='9'></td></tr>"
         table_html += "<tr class='category'>"
     else:
         table_html += "<tr>"
 
-    # first column (segment name)
+    # First column
     table_html += f"<td class='left bold'>{row[0]}</td>"
 
-    # remaining numeric columns
+    # Numeric columns
     for i in range(1,9):
         val = row[i]
-        style = ""
+        style = "text-align:right;"
 
-        # NET columns colored
+        # NET columns highlight + color
         if i in [5,6]:
-            style += f"color:{color_net(val)};font-weight:bold;font-size:12px;"
+            style += "background:#fff1cc;font-weight:bold;"
+            style += f"color:{color_net(val)};"
 
         table_html += f"<td style='{style}'>{val}</td>"
 
     table_html += "</tr>"
+
+# ===== GAP BEFORE NOTES =====
+table_html += "<tr class='separator'><td colspan='9'></td></tr>"
+
+# ===== NOTES SECTION =====
+table_html += """
+<tr class='notes'><td colspan='9'><b>NOTES:</b></td></tr>
+<tr class='notes'><td colspan='9'>• Source: NSE India</td></tr>
+<tr class='notes'><td colspan='9'>• Amounts in ₹ Crores</td></tr>
+<tr class='notes'><td colspan='9'>• Data updated daily after NSE release</td></tr>
+"""
 
 table_html += "</table>"
 
@@ -221,77 +234,93 @@ html = f"""
 <html>
 <head>
 <meta charset="UTF-8">
+
 <style>
 body {{
  font-family: Arial, Helvetica, sans-serif;
- background:white;
+ background:#eef2ff;
 }}
 
-.container{{
- max-width:770px;
+.container {{
+ max-width:760px;
  margin:auto;
 }}
 
-table.fii{{
+table.fii {{
  width:100%;
  border-collapse:collapse;
  font-size:11px;
+ background:#eef2ff;
 }}
 
-td,th{{
+td,th {{
  border:1px solid #cfd6e6;
- padding:6px 6px;
- text-align:right;
+ padding:6px;
 }}
 
-.tophead th{{
- background:#002a6e;
- color:white;
+th {{ text-align:center; }}
+.left {{ text-align:left; }}
+.num {{ text-align:right; }}
+.bold {{ font-weight:bold; }}
+
+.topbar {{
  font-size:14px;
+ font-weight:bold;
+ background:#dbe4ff;
 }}
 
-.midhead th{{
+.subhead {{
  background:#244c9a;
  color:white;
  font-size:12px;
 }}
 
-.subhead th{{
+.subsub {{
  background:#4f74c9;
  color:white;
  font-size:11px;
 }}
 
-.left{{ text-align:left; }}
-.bold{{ font-weight:bold; }}
-
-.category{{
- background:#e8eefc;
+.category {{
+ background:#dde5ff;
  font-weight:bold;
 }}
 
-.rotate{{
- transform:rotate(-15deg);
+.separator td {{
+ height:8px;
+ background:#cfd6ff;
+ border:none;
+}}
+
+.notes td {{
+ font-size:10px;
+ padding:3px;
+}}
+
+.rotate {{
+ transform:rotate(-45deg);
  white-space:nowrap;
- font-weight:bold;
 }}
 
+.firstcol {{
+ width:120px;
+}}
+
+.wrapamt {{
+ line-height:1.1;
+}}
 </style>
 </head>
 
 <body>
 <div class="container">
-
-<p><b>Last updated: {file_date}</b></p>
-
 {table_html}
-
 </div>
 </body>
 </html>
 """
 
-with open("index.html", "w", encoding="utf-8") as f:
+with open("index.html","w",encoding="utf-8") as f:
     f.write(html)
 
 print("index.html generated successfully")
