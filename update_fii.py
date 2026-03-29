@@ -164,7 +164,7 @@ table_html += """
   <th colspan='2'>BUY</th>
   <th colspan='2'>SELL</th>
   <th colspan='2'>NET</th>
-  <th colspan='2'>OPEN INTEREST</th>
+  <th colspan='2'>OPEN INTEREST AT THE END OF THE DAY</th>
 </tr>
 """
 
@@ -271,7 +271,7 @@ td,th{{
 }}
 
 .rotate{{
- transform:rotate(-30deg);
+ transform:rotate(-15deg);
  white-space:nowrap;
  font-weight:bold;
 }}
