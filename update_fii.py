@@ -158,7 +158,7 @@ table_html = """
 # ================= HEADER ROW 2 =================
 table_html += """
 <tr class='tophead'>
-  <th rowspan='3' class='credit'>
+  <th rowspan='2' class='credit'>
     <div class='rotate'>jayfromstockmarketsinindia</div>
   </th>
   <th colspan='2'>BUY</th>
