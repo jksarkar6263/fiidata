@@ -216,7 +216,7 @@ for r in range(2, len(df)):
 
         # NET columns highlight + color
         if i in [5,6]:
-            style += "background:#fff1cc;font-weight:bold;"
+            style += "background:#dde5ff;font-weight:bold;"
             style += f"color:{color_net(val)};"
 
         table_html += f"<td style='{style}'>{val}</td>"
@@ -225,14 +225,6 @@ for r in range(2, len(df)):
 
 # ===== GAP BEFORE NOTES =====
 table_html += "<tr class='separator'><td colspan='9'></td></tr>"
-
-# ===== NOTES SECTION =====
-table_html += """
-<tr class='notes'><td colspan='9'><b>NOTES:</b></td></tr>
-<tr class='notes'><td colspan='9'>• Source: NSE India</td></tr>
-<tr class='notes'><td colspan='9'>• Amounts in ₹ Crores</td></tr>
-<tr class='notes'><td colspan='9'>• Data updated daily after NSE release</td></tr>
-"""
 
 table_html += "</table>"
 
@@ -298,7 +290,7 @@ th {{ text-align:center; }}
 }}
 
 .separator td {{
- height:8px;
+ height:2px;
  background:#cfd6ff;
  border:none;
 }}
@@ -309,7 +301,7 @@ th {{ text-align:center; }}
 }}
 
 .rotate {{
- transform:rotate(-45deg);
+ transform:rotate(-30deg);
  white-space:nowrap;
 }}
 
