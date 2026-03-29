@@ -305,12 +305,11 @@ th {{ text-align:center; }}
  border:none;
 }}
 
-.notes td{
+.notes td{{
  font-size:9px;
  padding:2px 6px;
  line-height:1.1;
  background:#eef2ff;
-}
 }}
 
 .rotate {{
