@@ -180,13 +180,13 @@ table_html += """
 table_html += """
 <tr class='subsub'>
   <th>No. of Contracts</th>
-  <th class='wrapamt'>Amount<br>(₹ Crores)</th>
+  <th class='wrapamt'>Amount<br><span class="nowrap">(₹ Crores)</span></th>
   <th>No. of Contracts</th>
-  <th class='wrapamt'>Amount<br>(₹ Crores)</th>
+  <th class='wrapamt'>Amount<br><span class="nowrap">(₹ Crores)</span></th>
   <th>No. of Contracts</th>
-  <th class='wrapamt'>Amount<br>(₹ Crores)</th>
+  <th class='wrapamt'>Amount<br><span class="nowrap">(₹ Crores)</span></th>
   <th>No. of Contracts</th>
-  <th class='wrapamt'>Amount<br>(₹ Crores)</th>
+  <th class='wrapamt'>Amount<br><span class="nowrap">(₹ Crores)</span></th>
 </tr>
 """
 
@@ -209,10 +209,11 @@ for r in range(2, len(df)):
     if name == "":
         continue
 
-    # separator before major blocks
-    if name in major_rows:
+    # separator before major blocks (skip first one)
+if name in major_rows:
+    if r > 2:
         table_html += "<tr class='separator'><td colspan='9'></td></tr>"
-        table_html += "<tr class='category'>"
+    table_html += "<tr class='category'>"
     else:
         table_html += "<tr>"
 
@@ -299,8 +300,10 @@ th {{ text-align:center; }}
  font-weight:bold;
 }}
 
-.separator td {{
- height:1px;
+.separator td{{
+ padding:0 !important;
+ height:3px;
+ line-height:3px;
  background:#4f74c9;
  border:none;
 }}
@@ -310,6 +313,10 @@ th {{ text-align:center; }}
  padding:2px 6px;
  line-height:1.1;
  background:#eef2ff;
+ text-align:left;
+ white-space:nowrap;
+ border-left:1px solid #cfd6e6;
+ border-right:1px solid #cfd6e6;
 }}
 
 .rotate {{
@@ -323,6 +330,10 @@ th {{ text-align:center; }}
 
 .wrapamt {{
  line-height:1.1;
+}}
+
+.nowrap{{
+ white-space:nowrap;
 }}
 </style>
 </head>
