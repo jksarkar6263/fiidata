@@ -48,7 +48,7 @@ df = df.fillna("")
 # Fix header wording
 df = df.replace(
     ["Amt in Crores", "Amount (in Crores)", "Amount (Crores)"],
-    "Amount (in ₹ Crores)"
+    "Amount (₹ Crores)"
 )
 
 # -------------------------------
@@ -153,6 +153,9 @@ table_html = """
 """
 
 # ================= HEADER ROW 1 =================
+
+
+# ================= HEADER ROW 2 =================
 table_html += """
 <tr class='tophead'>
   <th rowspan='3' class='credit'>
@@ -165,23 +168,13 @@ table_html += """
 </tr>
 """
 
-# ================= HEADER ROW 2 =================
-table_html += """
-<tr class='midhead'>
-  <th colspan='2'>FII</th>
-  <th colspan='2'>FII</th>
-  <th colspan='2'>FII</th>
-  <th colspan='2'>FII</th>
-</tr>
-"""
-
 # ================= HEADER ROW 3 =================
 table_html += """
 <tr class='subhead'>
-  <th>No. of Contracts</th><th>Amount (in ₹ Crores)</th>
-  <th>No. of Contracts</th><th>Amount (in ₹ Crores)</th>
-  <th>No. of Contracts</th><th>Amount (in ₹ Crores)</th>
-  <th>No. of Contracts</th><th>Amount (in ₹ Crores)</th>
+  <th>No. of Contracts</th><th>Amount (₹ Crores)</th>
+  <th>No. of Contracts</th><th>Amount (₹ Crores)</th>
+  <th>No. of Contracts</th><th>Amount (₹ Crores)</th>
+  <th>No. of Contracts</th><th>Amount (₹ Crores)</th>
 </tr>
 """
 
@@ -228,10 +221,7 @@ html = f"""
 <html>
 <head>
 <meta charset="UTF-8">
-<title>FII Derivative Data</title>
-
 <style>
-
 body {{
  font-family: Arial, Helvetica, sans-serif;
  background:white;
@@ -251,7 +241,7 @@ table.fii{{
 td,th{{
  border:1px solid #cfd6e6;
  padding:6px 6px;
- text-align:center;
+ text-align:right;
 }}
 
 .tophead th{{
@@ -281,7 +271,7 @@ td,th{{
 }}
 
 .rotate{{
- transform:rotate(-45deg);
+ transform:rotate(-30deg);
  white-space:nowrap;
  font-weight:bold;
 }}
