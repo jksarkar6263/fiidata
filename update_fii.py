@@ -222,73 +222,86 @@ table_html += "</table>"
 # -------------------------------
 # STEP 7 — FINAL WEBPAGE
 # -------------------------------
+
 html = f"""
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
+<title>FII Derivative Data</title>
+
 <style>
-.container{
+
+body {{
+ font-family: Arial, Helvetica, sans-serif;
+ background:white;
+}}
+
+.container{{
  max-width:770px;
  margin:auto;
-}
+}}
 
-table.fii{
+table.fii{{
  width:100%;
  border-collapse:collapse;
  font-size:11px;
-}
+}}
 
-td,th{
+td,th{{
  border:1px solid #cfd6e6;
  padding:6px 6px;
  text-align:center;
-}
+}}
 
-.tophead th{
+.tophead th{{
  background:#002a6e;
  color:white;
  font-size:14px;
-}
+}}
 
-.midhead th{
+.midhead th{{
  background:#244c9a;
  color:white;
  font-size:12px;
-}
+}}
 
-.subhead th{
+.subhead th{{
  background:#4f74c9;
  color:white;
  font-size:11px;
-}
+}}
 
-.left{ text-align:left; }
-.bold{ font-weight:bold; }
+.left{{ text-align:left; }}
+.bold{{ font-weight:bold; }}
 
-.category{
+.category{{
  background:#e8eefc;
  font-weight:bold;
-}
+}}
 
-.rotate{
+.rotate{{
  transform:rotate(-45deg);
  white-space:nowrap;
  font-weight:bold;
-}
+}}
+
 </style>
 </head>
 
 <body>
 <div class="container">
+
 <p><b>Last updated: {file_date}</b></p>
+
 {table_html}
+
 </div>
 </body>
 </html>
 """
 
-with open("index.html","w",encoding="utf-8") as f:
+with open("index.html", "w", encoding="utf-8") as f:
     f.write(html)
 
 print("index.html generated successfully")
