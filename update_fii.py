@@ -3,7 +3,7 @@ import requests
 from datetime import datetime, timedelta
 
 # -------------------------------
-# STEP 1 — FIND LATEST NSE FILE
+# STEP 1 — DOWNLOAD LATEST NSE FILE
 # -------------------------------
 session = requests.Session()
 
@@ -13,7 +13,6 @@ headers = {
     "Referer": "https://www.nseindia.com/"
 }
 
-# visit NSE homepage to get cookies
 session.get("https://www.nseindia.com", headers=headers)
 
 base = "https://nsearchives.nseindia.com/content/fo/fii_stats_{}.xls"
@@ -21,7 +20,6 @@ base = "https://nsearchives.nseindia.com/content/fo/fii_stats_{}.xls"
 file_content = None
 file_date = None
 
-# NSE uploads only on trading days → check last 7 days
 for i in range(7):
     d = datetime.now() - timedelta(days=i)
     date_str = d.strftime("%d-%b-%Y")
@@ -38,32 +36,81 @@ for i in range(7):
 if file_content is None:
     raise Exception("No NSE file found in last 7 days")
 
-# save downloaded file
 with open("temp.xls", "wb") as f:
     f.write(file_content)
 
 # -------------------------------
-# STEP 2 — READ SHEET 2 EXACTLY
+# STEP 2 — READ SHEET2 EXACTLY
 # -------------------------------
 df = pd.read_excel("temp.xls", sheet_name="Sheet2", header=None)
-
-# Replace NaN with blanks
 df = df.fillna("")
 
 # -------------------------------
-# STEP 3 — CONVERT SHEET TO HTML
+# STEP 3 — HELPERS
 # -------------------------------
-table_html = df.to_html(index=False, header=False, border=0)
+def number_color(val):
+    try:
+        v = float(str(val).replace(",", ""))
+        if v > 0:
+            return "green"
+        elif v < 0:
+            return "red"
+    except:
+        pass
+    return "black"
+
+def is_category_row(text):
+    text = text.upper()
+    keywords = ["INDEX FUTURES", "INDEX OPTIONS", "STOCK FUTURES", "STOCK OPTIONS"]
+    return any(k in text for k in keywords)
 
 # -------------------------------
-# STEP 4 — BUILD WEBPAGE
+# STEP 4 — BUILD TABLE MANUALLY
+# -------------------------------
+table_html = "<table>"
+
+for r in range(len(df)):
+    row_values = df.iloc[r].tolist()
+    row_text = " ".join([str(x) for x in row_values])
+
+    # highlight major rows
+    if is_category_row(row_text):
+        table_html += "<tr class='category'>"
+    else:
+        table_html += "<tr>"
+
+    for c, val in enumerate(row_values):
+        style = ""
+
+        # first column bold
+        if c == 0:
+            style += "font-weight:bold; text-align:left;"
+
+        # NET columns (last two columns)
+        if c >= len(row_values) - 2:
+            style += "font-weight:bold; font-size:13px;"
+            style += f"color:{number_color(val)};"
+
+        text = str(val)
+
+        # rotate credit text
+        if "jayfromstockmarketsinindia" in text.lower():
+            text = f"<div class='rotate'>{text}</div>"
+
+        table_html += f"<td style='{style}'>{text}</td>"
+
+    table_html += "</tr>"
+
+table_html += "</table>"
+
+# -------------------------------
+# STEP 5 — FINAL WEBPAGE
 # -------------------------------
 html = f"""
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
-<title>FII Derivative Data</title>
 
 <style>
 body {{
@@ -71,26 +118,47 @@ body {{
     background:white;
 }}
 
+.container {{
+    max-width:770px;
+    margin:auto;
+}}
+
 table {{
-    border-collapse: collapse;
-    font-size: 12px;
+    width:100%;
+    border-collapse:collapse;
+    font-size:11px;
 }}
 
 td {{
-    padding: 6px 10px;
+    border:1px solid #d0d7e5;
+    padding:6px 8px;
+    text-align:center;
 }}
-</style>
 
+.category {{
+    background:#e8eefc;
+}}
+
+.rotate {{
+    transform:rotate(-45deg);
+    white-space:nowrap;
+}}
+
+</style>
 </head>
+
 <body>
+<div class="container">
+
+<p><b>Last updated: {file_date}</b></p>
 
 {table_html}
 
+</div>
 </body>
 </html>
 """
 
-# GitHub Pages needs index.html
 with open("index.html", "w", encoding="utf-8") as f:
     f.write(html)
 
