@@ -209,13 +209,13 @@ for r in range(2, len(df)):
     if name == "":
         continue
 
-    # separator before major blocks (skip first one)
+   # separator before major blocks (skip first one)
 if name in major_rows:
     if r > 2:
         table_html += "<tr class='separator'><td colspan='9'></td></tr>"
     table_html += "<tr class='category'>"
-    else:
-        table_html += "<tr>"
+else:
+    table_html += "<tr>"
 
     # First column
     table_html += f"<td class='left bold'>{row[0]}</td>"
