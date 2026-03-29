@@ -155,7 +155,7 @@ table_html = "<table class='fii'>"
 table_html += f"""
 <tr class='topbar'>
 <td colspan='5' class='left bold'>
-DETAILED STATISTICS OF FII DERIVATIVES FOR {file_date}
+DETAILED FII DERIVATIVES DATA FOR {file_date}
 </td>
 <td colspan='4' class='num bold'>
 Last updated on {file_date}
@@ -300,8 +300,8 @@ th {{ text-align:center; }}
 }}
 
 .separator td {{
- height:0.5px;
- background:#dbe4ff;
+ height:1px;
+ background:#4f74c9;
  border:none;
 }}
 
@@ -313,16 +313,16 @@ th {{ text-align:center; }}
 }}
 
 .rotate {{
- transform:rotate(-25deg);
+ transform:rotate(-20deg);
  white-space:nowrap;
 }}
 
 .firstcol {{
- width:110px;
+ width:105px;
 }}
 
 .wrapamt {{
- line-height:1;
+ line-height:1.1;
 }}
 </style>
 </head>
