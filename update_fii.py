@@ -42,7 +42,7 @@ with open("temp.xls", "wb") as f:
 # -------------------------------
 # STEP 2 — READ SHEET2 EXACTLY
 # -------------------------------
-df = pd.read_excel("temp.xls", sheet_name="Sheet2", header=None)
+df = pd.read_excel("temp.xls", header=None)
 df = df.fillna("")
 
 # -------------------------------
