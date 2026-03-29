@@ -96,8 +96,7 @@ td {{
 </head>
 <body>
 <div class="container">
-<h3>FII Derivatives Statistics</h3>
-<p>Updated: {file_date}</p>
+<p>Last Updated on: {file_date}</p>
 <table>
 """
 
