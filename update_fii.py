@@ -196,8 +196,20 @@ for r in range(2, len(df)):
     row = df.iloc[r].tolist()
     name = str(row[0]).strip().upper()
 
-        # ================= NOTES SECTION =================
-   
+# ================= NOTES SECTION =================
+# ================= NSE NOTES (FOOTNOTES) =================
+if "NOTE" in name:
+    table_html += "<tr class='separator'><td colspan='9'></td></tr>"
+    table_html += f"<tr class='notes'><td colspan='9' class='bold'>{row[0]}</td></tr>"
+    notes_mode = True
+    continue
+
+# All rows AFTER "Notes:" become merged footnote rows
+if 'notes_mode' in locals() and notes_mode:
+    if name == "":
+        continue
+    table_html += f"<tr class='notes'><td colspan='9'>{row[0]}</td></tr>"
+    continue
 
     # separator before major blocks (skip first one)
     if name in major_rows:
