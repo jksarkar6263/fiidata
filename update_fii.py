@@ -155,7 +155,7 @@ table_html = "<table class='fii'>"
 table_html += f"""
 <tr class='topbar'>
 <td colspan='5' class='left bold'>
-INDEX-WISE DETAILED FII DERIVATIVES DATA FOR {file_date}
+DETAILED FII DERIVATIVES DATA FOR {file_date}
 </td>
 <td colspan='4' class='num bold'>
 Last updated on {file_date}
@@ -196,6 +196,7 @@ for r in range(2, len(df)):
     row = df.iloc[r].tolist()
     name = str(row[0]).strip().upper()
 
+        # ================= NOTES SECTION =================
     if "NOTE" in name:
         table_html += "<tr class='separator'><td colspan='9'></td></tr>"
         table_html += f"<tr class='notes'><td colspan='9' class='left bold'>{row[0]}</td></tr>"
@@ -208,30 +209,13 @@ for r in range(2, len(df)):
     if name == "":
         continue
 
-    # ================= CATEGORY SEPARATORS =================
+    # separator before major blocks (skip first one)
     if name in major_rows:
         if r > 2:
             table_html += "<tr class='separator'><td colspan='9'></td></tr>"
         table_html += "<tr class='category'>"
     else:
         table_html += "<tr>"
-
-    # First column
-    table_html += f"<td class='left bold'>{row[0]}</td>"
-
-    # Numeric columns
-    for i in range(1,9):
-        val = row[i]
-        style = "text-align:right;"
-
-        # NET columns highlight
-        if i in [5,6]:
-            style += "background:#dde5ff;font-weight:bold;"
-            style += f"color:{color_net(val)};"
-
-        table_html += f"<td style='{style}'>{val}</td>"
-
-    table_html += "</tr>"
 
     # First column
     table_html += f"<td class='left bold'>{row[0]}</td>"
@@ -252,12 +236,6 @@ for r in range(2, len(df)):
 
 # ===== GAP BEFORE NOTES =====
 table_html += "<tr class='separator'><td colspan='9'></td></tr>"
-
-for note in notes:
-    if note == "Notes:":
-        table_html += f"<tr class='notes'><td colspan='9' class='bold'>{note}</td></tr>"
-    else:
-        table_html += f"<tr class='notes'><td colspan='9'>{note}</td></tr>"
 
 table_html += "</table>"
 
