@@ -196,9 +196,8 @@ for r in range(2, len(df)):
     row = df.iloc[r].tolist()
     name = str(row[0]).strip().upper()
 
-
-# ================= NOTES SECTION =================
- if "NOTE" in name:
+    # ================= NOTES SECTION =================
+    if "NOTE" in name:
         table_html += "<tr class='separator'><td colspan='9'></td></tr>"
         table_html += f"<tr class='notes'><td colspan='9' class='left bold'>{row[0]}</td></tr>"
         continue
