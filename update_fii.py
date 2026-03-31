@@ -155,7 +155,7 @@ table_html = "<table class='fii'>"
 table_html += f"""
 <tr class='topbar'>
 <td colspan='5' class='left bold'>
-DETAILED FII DERIVATIVES DATA FOR {file_date}
+INDEX-WISE DETAILED FII DERIVATIVES DATA FOR {file_date}
 </td>
 <td colspan='4' class='num bold'>
 Last updated on {file_date}
@@ -320,7 +320,7 @@ th {{ text-align:center; }}
 }}
 
 .rotate {{
- transform:rotate(-20deg);
+ transform:rotate(-15deg);
  white-space:nowrap;
 }}
 
@@ -350,3 +350,83 @@ with open("index.html","w",encoding="utf-8") as f:
     f.write(html)
 
 print("index.html generated successfully")
+
+# -------------------------------
+# STEP 8 — GENERATE EXCEL FILE
+# -------------------------------
+
+from openpyxl import Workbook
+from openpyxl.styles import Font, Alignment
+
+wb = Workbook()
+ws = wb.active
+ws.title = "FII DATA"
+
+# ===== WRITE TABLE TO EXCEL =====
+excel_row = 1
+
+# Title row
+ws.merge_cells(start_row=excel_row, start_column=1, end_row=excel_row, end_column=9)
+ws.cell(row=excel_row, column=1).value = f"DETAILED FII DERIVATIVES DATA FOR {file_date}"
+ws.cell(row=excel_row, column=1).font = Font(bold=True)
+ws.cell(row=excel_row, column=1).alignment = Alignment(horizontal="center")
+excel_row += 2
+
+# Write dataframe rows (skip first 2 header rows like HTML)
+for r in range(2, len(df)):
+    row = df.iloc[r].tolist()
+    name = str(row[0]).strip().upper()
+
+    # Detect NOTES block from NSE file
+    if "NOTE" in name:
+        excel_row += 1
+        ws.merge_cells(start_row=excel_row, start_column=1, end_row=excel_row, end_column=9)
+        ws.cell(row=excel_row, column=1).value = row[0]
+        ws.cell(row=excel_row, column=1).font = Font(bold=True)
+        ws.cell(row=excel_row, column=1).alignment = Alignment(horizontal="center")
+        excel_row += 1
+        continue
+
+    if r > 2 and "NOTE" in str(df.iloc[r-1,0]).upper():
+        ws.merge_cells(start_row=excel_row, start_column=1, end_row=excel_row, end_column=9)
+        ws.cell(row=excel_row, column=1).value = row[0]
+        ws.cell(row=excel_row, column=1).alignment = Alignment(horizontal="center")
+        excel_row += 1
+        continue
+
+    if name == "":
+        continue
+
+    # Write normal data rows
+    for c in range(9):
+        ws.cell(row=excel_row, column=c+1).value = row[c]
+
+    excel_row += 1
+
+
+# ===== ADD NOTES SECTION (MANUAL NSE NOTES) =====
+
+notes = [
+    "Notes:",
+    "Both buy and sell positions have been considered",
+    "Options Value (Buy/Sell) = Strike price * Qty",
+    "Futures Value (Buy/Sell) = Traded Price * Qty",
+    "Value & Open Interest at the end of day:",
+    "Options Value (End of day) = Underlying Close Price * Qty",
+    "Futures Value (End of day) = Closing Futures Price * Qty (daily settlement price)"
+]
+
+excel_row += 2  # gap before notes
+
+for note in notes:
+    ws.merge_cells(start_row=excel_row, start_column=1, end_row=excel_row, end_column=9)
+    cell = ws.cell(row=excel_row, column=1)
+    cell.value = note
+    cell.font = Font(bold=True if note == "Notes:" else False)
+    cell.alignment = Alignment(horizontal="center", vertical="center")
+    excel_row += 1
+
+# ===== SAVE FILE =====
+wb.save("fii.xlsx")
+
+print("Excel file generated successfully")
