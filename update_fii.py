@@ -155,7 +155,9 @@ table_html = "<table class='fii'>"
 table_html += f"""
 <tr class='topbar'>
 <td colspan='5' class='left bold'>
-DETAILED FII DERIVATIVES DATA FOR {file_date}
+INDEX-WISE DETAILED FII DERIVATIVES DATA FOR {file_date}
+&nbsp;&nbsp;|&nbsp;&nbsp;
+<a href="fii.xlsx" download class="download-link">Download Excel File</a>
 </td>
 <td colspan='4' class='num bold'>
 Last updated on {file_date}
