@@ -197,15 +197,7 @@ for r in range(2, len(df)):
     name = str(row[0]).strip().upper()
 
     # ================= NOTES SECTION =================
-    if "NOTE" in name:
-        table_html += "<tr class='separator'><td colspan='9'></td></tr>"
-        table_html += f"<tr class='notes'><td colspan='9' class='left bold'>{row[0]}</td></tr>"
-        continue
-
-    if r > 2 and "NOTE" in str(df.iloc[r-1,0]).upper():
-        table_html += f"<tr class='notes'><td colspan='9' class='left'>{row[0]}</td></tr>"
-        continue
-        
+          
     if name == "":
         continue
 
@@ -236,6 +228,23 @@ for r in range(2, len(df)):
 
 # ===== GAP BEFORE NOTES =====
 table_html += "<tr class='separator'><td colspan='9'></td></tr>"
+
+# ===== MANUAL NSE NOTES (MERGED FULL ROWS) =====
+notes = [
+    "Notes:",
+    "Both buy and sell positions have been considered",
+    "Options Value (Buy/Sell) = Strike price * Qty",
+    "Futures Value (Buy/Sell) = Traded Price * Qty",
+    "Value & Open Interest at the end of day:",
+    "Options Value (End of day) = Underlying Close Price * Qty",
+    "Futures Value (End of day) = Closing Futures Price * Qty (daily settlement price)"
+]
+
+for note in notes:
+    if note == "Notes:":
+        table_html += f"<tr class='notes'><td colspan='9' class='bold'>{note}</td></tr>"
+    else:
+        table_html += f"<tr class='notes'><td colspan='9'>{note}</td></tr>"
 
 table_html += "</table>"
 
