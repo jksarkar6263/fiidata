@@ -236,6 +236,36 @@ for r in range(2, len(df)):
 
 # ===== GAP BEFORE NOTES =====
 table_html += "<tr class='separator'><td colspan='9'></td></tr>"
+from openpyxl.styles import Font, Alignment
+
+# ===== NOTES SECTION =====
+
+notes = [
+    "Notes:",
+    "Both buy and sell positions have been considered",
+    "Options Value (Buy/Sell) = Strike price * Qty",
+    "Futures Value (Buy/Sell) = Traded Price * Qty",
+    "Value & Open Interest at the end of day:",
+    "Options Value (End of day) = Underlying Close Price * Qty",
+    "Futures Value (End of day) = Closing Futures Price * Qty (daily settlement price)"
+]
+
+# leave one blank row after table
+r += 2
+
+for note in notes:
+    ws.merge_cells(start_row=r, start_column=1, end_row=r, end_column=9)
+    cell = ws.cell(row=r, column=1)
+    cell.value = note
+    
+    # formatting
+    cell.font = Font(bold=True if note == "Notes:" else False)
+    cell.alignment = Alignment(horizontal="center", vertical="center")
+    
+    # ⭐ Make rows compact (tight)
+    ws.row_dimensions[r].height = 12
+    
+    r += 1
 
 table_html += "</table>"
 
