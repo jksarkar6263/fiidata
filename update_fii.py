@@ -198,14 +198,17 @@ for r in range(2, len(df)):
 
 
 # ================= NOTES SECTION =================
-if "NOTE" in name:
-    table_html += "<tr class='separator'><td colspan='9'></td></tr>"
-    table_html += f"<tr class='notes'><td colspan='9' class='left bold'>{row[0]}</td></tr>"
-    continue
+ if "NOTE" in name:
+        table_html += "<tr class='separator'><td colspan='9'></td></tr>"
+        table_html += f"<tr class='notes'><td colspan='9' class='left bold'>{row[0]}</td></tr>"
+        continue
 
-if r > 2 and "NOTE" in str(df.iloc[r-1,0]).upper():
-    table_html += f"<tr class='notes'><td colspan='9' class='left'>{row[0]}</td></tr>"
-    continue
+    if r > 2 and "NOTE" in str(df.iloc[r-1,0]).upper():
+        table_html += f"<tr class='notes'><td colspan='9' class='left'>{row[0]}</td></tr>"
+        continue
+        
+    if name == "":
+        continue
 
     # separator before major blocks (skip first one)
     if name in major_rows:
