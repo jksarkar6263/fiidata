@@ -197,17 +197,7 @@ for r in range(2, len(df)):
     name = str(row[0]).strip().upper()
 
         # ================= NOTES SECTION =================
-    if "NOTE" in name:
-        table_html += "<tr class='separator'><td colspan='9'></td></tr>"
-        table_html += f"<tr class='notes'><td colspan='9' class='left bold'>{row[0]}</td></tr>"
-        continue
-
-    if r > 2 and "NOTE" in str(df.iloc[r-1,0]).upper():
-        table_html += f"<tr class='notes'><td colspan='9' class='left'>{row[0]}</td></tr>"
-        continue
-        
-    if name == "":
-        continue
+   
 
     # separator before major blocks (skip first one)
     if name in major_rows:
@@ -367,7 +357,7 @@ excel_row = 1
 
 # Title row
 ws.merge_cells(start_row=excel_row, start_column=1, end_row=excel_row, end_column=9)
-ws.cell(row=excel_row, column=1).value = f"DETAILED FII DERIVATIVES DATA FOR {file_date}"
+ws.cell(row=excel_row, column=1).value = f"INDEX-WISE DETAILED FII DERIVATIVES DATA FOR {file_date}"
 ws.cell(row=excel_row, column=1).font = Font(bold=True)
 ws.cell(row=excel_row, column=1).alignment = Alignment(horizontal="center")
 excel_row += 2
