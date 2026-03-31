@@ -196,18 +196,44 @@ for r in range(2, len(df)):
     row = df.iloc[r].tolist()
     name = str(row[0]).strip().upper()
 
-    # ================= NOTES SECTION =================
-          
+    # ================= NOTES FROM NSE (MERGED ROWS) =================
+    if "NOTE" in name:
+        table_html += "<tr class='separator'><td colspan='9'></td></tr>"
+        table_html += f"<tr class='notes'><td colspan='9' class='left bold'>{row[0]}</td></tr>"
+        continue
+
+    if r > 2 and "NOTE" in str(df.iloc[r-1,0]).upper():
+        table_html += f"<tr class='notes'><td colspan='9' class='left'>{row[0]}</td></tr>"
+        continue
+
+    # Skip blank rows from XLS
     if name == "":
         continue
 
-    # separator before major blocks (skip first one)
+    # ================= CATEGORY SEPARATORS =================
     if name in major_rows:
         if r > 2:
             table_html += "<tr class='separator'><td colspan='9'></td></tr>"
         table_html += "<tr class='category'>"
     else:
         table_html += "<tr>"
+
+    # First column
+    table_html += f"<td class='left bold'>{row[0]}</td>"
+
+    # Numeric columns
+    for i in range(1,9):
+        val = row[i]
+        style = "text-align:right;"
+
+        # NET columns highlight
+        if i in [5,6]:
+            style += "background:#dde5ff;font-weight:bold;"
+            style += f"color:{color_net(val)};"
+
+        table_html += f"<td style='{style}'>{val}</td>"
+
+    table_html += "</tr>"
 
     # First column
     table_html += f"<td class='left bold'>{row[0]}</td>"
@@ -410,29 +436,6 @@ for r in range(2, len(df)):
     for c in range(9):
         ws.cell(row=excel_row, column=c+1).value = row[c]
 
-    excel_row += 1
-
-
-# ===== ADD NOTES SECTION (MANUAL NSE NOTES) =====
-
-notes = [
-    "Notes:",
-    "Both buy and sell positions have been considered",
-    "Options Value (Buy/Sell) = Strike price * Qty",
-    "Futures Value (Buy/Sell) = Traded Price * Qty",
-    "Value & Open Interest at the end of day:",
-    "Options Value (End of day) = Underlying Close Price * Qty",
-    "Futures Value (End of day) = Closing Futures Price * Qty (daily settlement price)"
-]
-
-excel_row += 2  # gap before notes
-
-for note in notes:
-    ws.merge_cells(start_row=excel_row, start_column=1, end_row=excel_row, end_column=9)
-    cell = ws.cell(row=excel_row, column=1)
-    cell.value = note
-    cell.font = Font(bold=True if note == "Notes:" else False)
-    cell.alignment = Alignment(horizontal="center", vertical="center")
     excel_row += 1
 
 # ===== SAVE FILE =====
