@@ -6,23 +6,19 @@
 
 const BASE_API = "https://all-in-one.stockmarketsinindia.workers.dev/api/marketMovers";
 
-/* ---------- route map: Blogger page path → endpoint config ----------
-   Update the LEFT side (/p/your-page.html) to match your actual
-   Blogger page URLs. Right side is already filled with your endpoints. */
+/* ---------- route map: Blogger page path -> endpoint config ----------
+   Slugs taken directly from your existing PAGE_MAP — no changes needed. */
 const ROUTE_MAP = {
-  "/p/nse-gainers.html"  : { path: "/nse/gainers",     type: "equity_nse", label: "NSE Gainers",        exchange: "NSE" },
-  "/p/nse-losers.html"   : { path: "/nse/losers",      type: "equity_nse", label: "NSE Losers",         exchange: "NSE" },
-  "/p/nse-volumes.html"  : { path: "/nse/volumes",     type: "equity_nse", label: "NSE Volume Toppers", exchange: "NSE" },
-  "/p/bse-gainers.html"  : { path: "/bse/gainers",     type: "equity_bse", label: "BSE Gainers",        exchange: "BSE" },
-  "/p/bse-losers.html"   : { path: "/bse/losers",      type: "equity_bse", label: "BSE Losers",         exchange: "BSE" },
-  "/p/bse-volumes.html"  : { path: "/bse/volumes",     type: "equity_bse", label: "BSE Volume Toppers", exchange: "BSE" },
-  "/p/futstk-gainers.html"  : { path: "/futstk/gainers",  type: "future",     label: "Future Gainers"  },
-  "/p/futstk-losers.html"   : { path: "/futstk/losers",   type: "future",     label: "Future Losers"   },
-  "/p/optstk-gainers.html"  : { path: "/optstk/gainers",  type: "option",     label: "Option Gainers"  },
-  "/p/optstk-losers.html"   : { path: "/optstk/losers",   type: "option",     label: "Option Losers"   },
-
-  /* your existing page — map it to whichever endpoint makes sense */
-  "/p/gain-lose-vol.html": { path: "/nse/gainers",     type: "equity_nse", label: "NSE Gainers",        exchange: "NSE" },
+  "/p/nse-gainers.html"    : { path: "/nse/gainers",    type: "equity_nse", label: "NSE Gainers",        exchange: "NSE" },
+  "/p/nse-losers.html"     : { path: "/nse/losers",     type: "equity_nse", label: "NSE Losers",         exchange: "NSE" },
+  "/p/nse-volumes.html"    : { path: "/nse/volume",     type: "equity_nse", label: "NSE Volume Toppers", exchange: "NSE" },
+  "/p/bse-gainers.html"    : { path: "/bse/gainers",    type: "equity_bse", label: "BSE Gainers",        exchange: "BSE" },
+  "/p/bse-losers.html"     : { path: "/bse/losers",     type: "equity_bse", label: "BSE Losers",         exchange: "BSE" },
+  "/p/bse-volumes.html"    : { path: "/bse/volume",     type: "equity_bse", label: "BSE Volume Toppers", exchange: "BSE" },
+  "/p/futstk-gainers.html" : { path: "/futstk/gainers", type: "future",     label: "Future Gainers"      },
+  "/p/futstk-losers.html"  : { path: "/futstk/losers",  type: "future",     label: "Future Losers"       },
+  "/p/optstk-gainers.html" : { path: "/optstk/gainers", type: "option",     label: "Option Gainers"      },
+  "/p/optstk-losers.html"  : { path: "/optstk/losers",  type: "option",     label: "Option Losers"       },
 };
 
 /* ============================================================
