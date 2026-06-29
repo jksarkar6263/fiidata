@@ -128,9 +128,9 @@
 }
 
 /* ---------- Change cells ---------- */
-.pos { color: #0a7c3a; font-weight: 500; }
-.neg { color: #c0392b; font-weight: 500; }
-.neu { color: #666; }
+#stock-widget td.sw-pos { color: #0a7c3a !important; font-weight: 600 !important; }
+#stock-widget td.sw-neg { color: #c0392b !important; font-weight: 600 !important; }
+#stock-widget td.sw-neu { color: #666    !important; }
 
 /* ---------- Loading state ---------- */
 .sw-loading {
