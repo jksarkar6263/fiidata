@@ -3,7 +3,6 @@ cat > /mnt/user-data/outputs/stock-widget/sector-widget.js << 'EOF'
    sector-widget.js
    Host at: jksarkar6263/fiidata@main/marketMovers/sector-widget.js
    ══════════════════════════════════════════════════════════ */
-
 function initSectorWidget(){
   var BASE="https://all-in-one.stockmarketsinindia.workers.dev/api/marketMovers";
   var ENDPOINTS={
@@ -16,7 +15,6 @@ function initSectorWidget(){
   var currentView="table";   /* default = table */
   var sortCol="MCAP";
   var sortAsc=false;
-
   /* ── colour for heatmap tiles ── */
   function tileColor(p){
     p=parseFloat(p)||0;
@@ -28,7 +26,6 @@ function initSectorWidget(){
   function sCls(v){var n=Number(v);return isNaN(n)||n===0?"":n>0?"s-pos":"s-neg";}
   function sFmt(v,d){var n=Number(v);if(isNaN(n))return"—";return(n>0?"&#9650; ":n<0?"&#9660; ":"")+Math.abs(n).toFixed(d!=null?d:2);}
   function arrow(col){if(sortCol!==col)return" &#8645;";return sortAsc?" &#9650;":" &#9660;";}
-
   function sortedData(data){
     return data.slice().sort(function(a,b){
       if(sortCol==="Name")return sortAsc
@@ -39,7 +36,6 @@ function initSectorWidget(){
         :(Number(b[sortCol])||0)-(Number(a[sortCol])||0);
     });
   }
-
   /* ── A/D bar cell (float-based, Edge-safe) ── */
   function adBar(up,nc,dn){
     var tot=(up+nc+dn)||1;
@@ -59,11 +55,9 @@ function initSectorWidget(){
       +'</div>'
       +'</td>';
   }
-
   /* ── top control bar (exchange tabs + view toggle) ── */
   function controlBar(exchange,view,tUp,tDn,tNc){
     return '<div class="sec-ctrl">'
-
       /* left: exchange tabs */
       +'<div class="sec-exch">'
         +'<button class="sec-tab'+(exchange==="NSE"?" active":"")
@@ -71,7 +65,6 @@ function initSectorWidget(){
         +'<button class="sec-tab'+(exchange==="BSE"?" active":"")
           +'" onclick="secSwitch(\'BSE\')">BSE</button>'
       +'</div>'
-
       /* center: title + summary */
       +'<div class="sec-mid">'
         +'<span class="sec-exch-label">'+exchange+' Sectoral Performance</span>'
@@ -81,7 +74,6 @@ function initSectorWidget(){
           +'<span class="s-nc">&#8212; '+tNc+' Unch</span>'
         +'</span>'
       +'</div>'
-
       /* right: view toggle */
       +'<div class="sec-view-btns">'
         +'<button class="sec-view-btn'+(view==="card"?" active":"")
@@ -89,10 +81,8 @@ function initSectorWidget(){
         +'<button class="sec-view-btn'+(view==="table"?" active":"")
           +'" onclick="secView(\'table\')">&#9776; Table</button>'
       +'</div>'
-
     +'</div>';
   }
-
   /* ── heatmap ── */
   function buildHeatmap(data){
     var sorted=data.slice().sort(function(a,b){
@@ -112,7 +102,6 @@ function initSectorWidget(){
       }).join("")
     +'</div>';
   }
-
   /* ── table ── */
   function buildTable(data){
     var rows=sortedData(data).map(function(r){
@@ -121,32 +110,29 @@ function initSectorWidget(){
         +adBar(r.UP||0,r.noChg||0,r.down||0)
         +'<td class="'+sCls(r.ADRatio-1)+'">'+fmt(r.ADRatio)+'</td>'
         +'<td>&#8377;'+Number(r.MCAP||0).toLocaleString("en-IN",{maximumFractionDigits:0})+'</td>'
-        +'<td class="'+sCls(r.MCAP_PerChange)+'">'+sFmt(r.MCAP_PerChange)+'%</td>'
         +'<td class="'+sCls(r.MCAP_CHANGE)+'">&#8377;'+fmt(r.MCAP_CHANGE)+'Cr</td>'
-        +'</tr>';
+        +'<td class="'+sCls(r.MCAP_PerChange)+'">'+sFmt(r.MCAP_PerChange)+'%</td>'
+     +'</tr>';
     }).join("");
     return '<div class="sec-scroll">'
       +'<table class="sec-table"><thead><tr>'
-        +'<th class="sortable" style="text-align:left" onclick="secSort(\'Name\')">Sector'+arrow("Name")+'</th>'
+        +'<th class="sortable" style="text-align:center" onclick="secSort(\'Name\')">Sector'+arrow("Name")+'</th>'
         +'<th style="text-align:left">Adv / Unch / Dec</th>'
         +'<th>A/D Ratio</th>'
         +'<th class="sortable" onclick="secSort(\'MCAP\')">MCap (Cr)'+arrow("MCAP")+'</th>'
-        +'<th class="sortable" onclick="secSort(\'MCAP_PerChange\')">MCap Chg%'+arrow("MCAP_PerChange")+'</th>'
         +'<th class="sortable" onclick="secSort(\'MCAP_CHANGE\')">MCap Chg (Cr)'+arrow("MCAP_CHANGE")+'</th>'
-      +'</tr></thead><tbody>'+rows+'</tbody></table>'
+        +'<th class="sortable" onclick="secSort(\'MCAP_PerChange\')">MCap Chg%'+arrow("MCAP_PerChange")+'</th>'
+        +'</tr></thead><tbody>'+rows+'</tbody></table>'
     +'</div>';
   }
-
   /* ── main render ── */
   function render(exchange,data){
     var tUp=0,tDn=0,tNc=0;
     data.forEach(function(r){tUp+=r.UP||0;tDn+=r.down||0;tNc+=r.noChg||0;});
-
     var content=controlBar(exchange,currentView,tUp,tDn,tNc);
     content+=(currentView==="card")?buildHeatmap(data):buildTable(data);
     widget.innerHTML=content;
   }
-
   /* ── fetch + cache ── */
   async function load(exchange){
     if(!cache[exchange]){
@@ -179,7 +165,6 @@ function initSectorWidget(){
     }
     render(exchange,cache[exchange]);
   }
-
   /* ── global handlers ── */
   window.secSwitch=function(ex){currentExchange=ex;load(ex);};
   window.secView  =function(v){currentView=v;if(cache[currentExchange])render(currentExchange,cache[currentExchange]);};
@@ -188,8 +173,6 @@ function initSectorWidget(){
     else{sortCol=col;sortAsc=(col==="Name");}
     if(cache[currentExchange])render(currentExchange,cache[currentExchange]);
   };
-
   load("NSE");
 }
 EOF
-echo Done
