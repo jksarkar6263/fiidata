@@ -4,7 +4,7 @@
    https://raw.githubusercontent.com/YOUR_USERNAME/YOUR_REPO/main/api.js
    ============================================================ */
 
-const BASE_API = "https://all-in-one.stockmarketsinindia.workers.dev/api/marketMovers";
+const MARKET_MOVERS_PATH = "/api/marketMovers";
 
 /* ---------- route map: Blogger page path -> endpoint config ----------
    Slugs taken directly from your existing PAGE_MAP — no changes needed. */
@@ -144,7 +144,8 @@ async function loadStockTable(containerId) {
   el.innerHTML = `<div class="sw-loading"><span class="sw-spinner"></span> Loading ${route.label}…</div>`;
 
   try {
-    const res  = await fetch(BASE_API + route.path);
+    try {
+    const res  = await WorkerAuth.fetchWithAuth(WorkerAuth.ALL_IN_ONE_BASE, MARKET_MOVERS_PATH + route.path);
     if (!res.ok) throw new Error("HTTP " + res.status);
     const json = await res.json();
     if (!json.success || !Array.isArray(json.data) || !json.data.length) throw new Error("Empty data");
@@ -177,7 +178,7 @@ async function loadHomepageWidget(containerId, sections) {
   el.innerHTML = `<div class="sw-loading"><span class="sw-spinner"></span> Loading market overview…</div>`;
 
   const fetches = sections.map(s =>
-    fetch(BASE_API + s.path)
+    WorkerAuth.fetchWithAuth(WorkerAuth.ALL_IN_ONE_BASE, MARKET_MOVERS_PATH + s.path)
       .then(r => r.json())
       .then(json => ({ ...s, rows: (json.data || []).slice(0, s.limit || 5), ok: json.success }))
       .catch(() => ({ ...s, rows: [], ok: false }))
