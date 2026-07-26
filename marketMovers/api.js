@@ -144,7 +144,6 @@ async function loadStockTable(containerId) {
   el.innerHTML = `<div class="sw-loading"><span class="sw-spinner"></span> Loading ${route.label}…</div>`;
 
   try {
-    try {
     const res  = await WorkerAuth.fetchWithAuth(WorkerAuth.ALL_IN_ONE_BASE, MARKET_MOVERS_PATH + route.path);
     if (!res.ok) throw new Error("HTTP " + res.status);
     const json = await res.json();
